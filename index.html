@@ -1,378 +1,1241 @@
-meu-portal-de-apoio/
-│
-├── index.html
-├── estilo.css
-└── script.js
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Portal de Apoio ao Estudante</title>
+
     <link rel="stylesheet" href="estilo.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
 
+    <!-- Barra de acessibilidade -->
     <div class="top-bar">
-        <button id="btn-fonte"><i class="fa-solid fa-text-height"></i> Aumentar Fonte</button>
-        <button id="btn-tema"><i class="fa-solid fa-moon"></i> Modo Escuro</button>
+
+        <button id="btn-fonte">
+            <i class="fa-solid fa-text-height"></i>
+            Aumentar Fonte
+        </button>
+
+        <button id="btn-tema">
+            <i class="fa-solid fa-moon"></i>
+            Modo Escuro
+        </button>
+
     </div>
 
+
+    <!-- Cabeçalho -->
     <header>
+
         <div class="logo">
-            <h1><i class="fa-solid fa-heart-pulse"></i> Portal Conecta</h1>
+            <h1>
+                <i class="fa-solid fa-heart-pulse"></i>
+                Portal Conecta
+            </h1>
         </div>
+
+
         <nav>
+
             <ul>
                 <li><a href="#inicio">Início</a></li>
-                <li><a href="#escuta">Portal de Escuta</a></li>
+                <li><a href="#escuta">Escuta</a></li>
                 <li><a href="#quiz">Quiz</a></li>
-                <li><a href="#referencias">Referências</a></li>
+                <li><a href="#ajuda">Ajuda</a></li>
             </ul>
+
         </nav>
+
     </header>
 
+
+
     <main>
+
+
+        <!-- Página inicial -->
         <section id="inicio" class="hero-section">
-            <div class="hero-content">
-                <h2>Bem-vindo ao Portal de Apoio ao Estudante</h2>
-                <p>Aqui você encontrará informações, orientações e apoio sobre situações vivenciadas no ambiente escolar. Você não está sozinho(a)!</p>
-                <a href="#escuta" class="btn-primary">Precisa conversar?</a>
-            </div>
+
+            <h2>
+                Bem-vindo ao Portal de Apoio ao Estudante
+            </h2>
+
+            <p>
+                Um espaço de informação, acolhimento e orientação
+                para estudantes.
+            </p>
+
+            <a href="#escuta" class="btn-primary">
+                Preciso conversar
+            </a>
+
         </section>
 
-        <hr>
 
+
+
+        <!-- Portal de escuta -->
         <section id="escuta" class="section-container">
-            <h2><i class="fa-solid fa-comments"></i> Portal de Escuta</h2>
-            <p class="subtitle">Este é um espaço seguro para desabafar. Nenhuma informação escrita aqui será salva.</p>
+
+            <h2>
+                <i class="fa-solid fa-comments"></i>
+                Portal de Escuta
+            </h2>
+
+
+            <p>
+                Este espaço permite escrever seus sentimentos.
+                Nenhuma mensagem será armazenada.
+            </p>
+
+
 
             <form id="form-escuta">
-                <label for="desabafo">Escreva o que está sentindo ou passando:</label>
-                <textarea id="desabafo" rows="5" placeholder="Digite aqui seu desabafo..." required></textarea>
-                <button type="submit" class="btn-primary">Enviar Desabafo</button>
+
+                <label for="desabafo">
+                    Escreva o que está sentindo:
+                </label>
+
+
+                <textarea 
+                id="desabafo"
+                placeholder="Digite sua mensagem..."
+                required></textarea>
+
+
+
+                <button class="btn-primary" type="submit">
+                    Enviar
+                </button>
+
+
             </form>
+
+
 
             <div id="mensagem-resposta" class="hidden"></div>
 
-            <div class="orientacoes-box">
-                <h3><i class="fa-solid fa-hand-holding-heart"></i> Precisa de ajuda imediata?</h3>
-                <p>Procurar ajuda é um ato de coragem. Não hesite em buscar apoio com:</p>
-                <ul>
-                    <li>Professores, pedagogos ou a direção da sua escola.</li>
-                    <li>Parentes e adultos de sua confiança.</li>
-                    <li><strong>CVV (Centro de Valorização da Vida):</strong> Ligue 188 ou acesse <a href="https://cvv.org.br/" target="_blank" rel="noopener">cvv.org.br</a>.</li>
-                </ul>
-            </div>
+
         </section>
 
-        <hr>
 
+
+
+
+
+        <!-- Quiz -->
         <section id="quiz" class="section-container">
-            <h2><i class="fa-solid fa-circle-question"></i> Quiz: Teste seus Conhecimentos</h2>
-            <div id="quiz-box">
-                <form id="quiz-form">
-                    <div class="pergunta-box">
-                        <p><strong>1. Espalhar boatos e ofensas repetidamente na internet sobre alguém é considerado:</strong></p>
-                        <label><input type="radio" name="p1" value="0"> Apagamento de dados</label><br>
-                        <label><input type="radio" name="p1" value="1"> Cyberbullying</label><br>
-                        <label><input type="radio" name="p1" value="0"> Brincadeira inofensiva</label>
-                    </div>
 
-                    <div class="pergunta-box">
-                        <p><strong>2. O que você deve fazer ao presenciar uma situação de preconceito na escola?</strong></p>
-                        <label><input type="radio" name="p2" value="0"> Ignorar para não se envolver</label><br>
-                        <label><input type="radio" name="p2" value="1"> Buscar ajuda de um professor/pedagogo e apoiar a vítima</label><br>
-                        <label><input type="radio" name="p2" value="0"> Gravar e postar nas redes sociais</label>
-                    </div>
 
-                    <div class="pergunta-box">
-                        <p><strong>3. Qual das senhas a seguir é considerada mais segura para suas contas?</strong></p>
-                        <label><input type="radio" name="p3" value="0"> 12345678</label><br>
-                        <label><input type="radio" name="p3" value="0"> datadenascimento2008</label><br>
-                        <label><input type="radio" name="p3" value="1"> P@ss#2026!Segura</label>
-                    </div>
+            <h2>
+                <i class="fa-solid fa-circle-question"></i>
+                Quiz de Conhecimentos
+            </h2>
 
-                    <div class="pergunta-box">
-                        <p><strong>4. Respeitar as diferenças de opiniões, culturas e identidades no ambiente escolar ajuda a:</strong></p>
-                        <label><input type="radio" name="p4" value="1"> Criar um ambiente acolhedor e inclusivo para todos</label><br>
-                        <label><input type="radio" name="p4" value="0"> Diminuir as notas da turma</label><br>
-                        <label><input type="radio" name="p4" value="0"> Gerar divisões entre os estudantes</label>
-                    </div>
 
-                    <div class="pergunta-box">
-                        <p><strong>5. Se alguém estiver passando por um momento difícil com sua saúde emocional, a atitude correta é:</strong></p>
-                        <label><input type="radio" name="p5" value="0"> Dizer que é "drama" ou "frescura"</label><br>
-                        <label><input type="radio" name="p5" value="1"> Praticar a escuta empática e orientar a buscar ajuda profissional</label><br>
-                        <label><input type="radio" name="p5" value="0"> Afastar-se imediatamente da pessoa</label>
-                    </div>
 
-                    <button type="button" onclick="calcularQuiz()" class="btn-primary">Finalizar Quiz</button>
-                </form>
+            <div class="pergunta-box">
 
-                <div id="resultado-quiz"></div>
+                <p>
+                    1 - Respeitar os colegas ajuda a criar:
+                </p>
+
+                <label>
+                    <input type="radio" name="p1" value="1">
+                    Um ambiente saudável
+                </label>
+
+                <br>
+
+                <label>
+                    <input type="radio" name="p1" value="0">
+                    Mais conflitos
+                </label>
+
             </div>
+
+
+
+
+            <div class="pergunta-box">
+
+                <p>
+                    2 - Ao sofrer bullying, o correto é:
+                </p>
+
+                <label>
+                    <input type="radio" name="p2" value="1">
+                    Procurar ajuda
+                </label>
+
+                <br>
+
+                <label>
+                    <input type="radio" name="p2" value="0">
+                    Guardar tudo sozinho
+                </label>
+
+            </div>
+
+
+
+
+
+            <div class="pergunta-box">
+
+                <p>
+                    3 - Uma senha segura deve ter:
+                </p>
+
+
+                <label>
+                    <input type="radio" name="p3" value="1">
+                    Letras, números e símbolos
+                </label>
+
+                <br>
+
+
+                <label>
+                    <input type="radio" name="p3" value="0">
+                    Apenas seu nome
+                </label>
+
+
+            </div>
+
+
+
+
+
+            <div class="pergunta-box">
+
+                <p>
+                    4 - Ouvir alguém com atenção é:
+                </p>
+
+
+                <label>
+                    <input type="radio" name="p4" value="1">
+                    Praticar empatia
+                </label>
+
+                <br>
+
+
+                <label>
+                    <input type="radio" name="p4" value="0">
+                    Ignorar sentimentos
+                </label>
+
+
+            </div>
+
+
+
+
+
+            <div class="pergunta-box">
+
+                <p>
+                    5 - Quando alguém precisa de ajuda devemos:
+                </p>
+
+
+                <label>
+                    <input type="radio" name="p5" value="1">
+                    Apoiar e orientar
+                </label>
+
+                <br>
+
+
+                <label>
+                    <input type="radio" name="p5" value="0">
+                    Fazer piadas
+                </label>
+
+
+            </div>
+
+
+
+            <button 
+            onclick="calcularQuiz()" 
+            class="btn-primary">
+
+                Finalizar Quiz
+
+            </button>
+
+
+
+            <div id="resultado-quiz"></div>
+
+
         </section>
 
-        <hr>
 
-        <section id="referencias" class="section-container">
-            <h2><i class="fa-solid fa-book-bookmark"></i> Referências e Fontes Confiáveis</h2>
-            <ul class="lista-referencias">
-                <li><a href="https://www.gov.br/mdh/pt-br" target="_blank" rel="noopener">Ministério dos Direitos Humanos e da Cidadania</a></li>
-                <li><a href="https://safernet.org.br/" target="_blank" rel="noopener">SaferNet Brasil — Segurança Digital</a></li>
-                <li><a href="https://cvv.org.br/" target="_blank" rel="noopener">CVV — Centro de Valorização da Vida</a></li>
-                <li><a href="https://www.unicef.org/brazil/" target="_blank" rel="noopener">UNICEF Brasil — Apoio e Proteção à Infância e Juventude</a></li>
-            </ul>
+
+
+
+
+        <!-- Ajuda -->
+        <section id="ajuda" class="section-container">
+
+
+            <h2>
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                Precisa de ajuda?
+            </h2>
+
+
+            <p>
+                Procure um professor, familiar ou pessoa de confiança.
+            </p>
+
+
+            <p>
+                CVV: Ligue 188 para apoio emocional.
+            </p>
+
+
         </section>
+
+
+
     </main>
 
-    <button id="btn-topo" title="Voltar ao topo"><i class="fa-solid fa-arrow-up"></i></button>
+
+
+
+
+    <!-- Botão topo -->
+
+    <button id="btn-topo">
+        ↑
+    </button>
+
+
+
+
 
     <footer>
-        <p>&copy; Projeto Escolar — Portal de Apoio ao Estudante. Desenvolvido para fins educativos.</p>
+
+        <p>
+            Projeto Escolar - Portal de Apoio ao Estudante
+        </p>
+
     </footer>
 
+
+
     <script src="script.js"></script>
+
+
 </body>
+
 </html>
-/* Variáveis para suporte a modo claro/escuro */
+/* ==========================
+   CONFIGURAÇÕES GERAIS
+========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
 :root {
+
     --bg-color: #f4f7f6;
     --card-bg: #ffffff;
     --text-color: #333333;
+
     --primary-color: #4a90e2;
     --secondary-color: #357abd;
+
     --accent-color: #2ecc71;
-    --border-color: #e0e0e0;
-    --font-size-base: 16px;
+
+    --border-color: #dddddd;
+
+    --shadow:
+    0 4px 10px rgba(0,0,0,0.08);
+
 }
+
+
 
 body.dark-mode {
+
     --bg-color: #1e1e2e;
     --card-bg: #2b2b3d;
-    --text-color: #e0e0e0;
+    --text-color: #eeeeee;
+
     --primary-color: #7289da;
     --secondary-color: #5b6eae;
+
     --border-color: #44445c;
+
 }
+
+
+
 
 body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: var(--font-size-base);
-    background-color: var(--bg-color);
-    color: var(--text-color);
+
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+    background-color:
+    var(--bg-color);
+
+    color:
+    var(--text-color);
+
     line-height: 1.6;
-    transition: background-color 0.3s, color 0.3s;
+
+    transition:
+    0.3s;
+
 }
 
-/* Barra do Topo (Acessibilidade) */
+
+
+/* ==========================
+   BARRA SUPERIOR
+========================== */
+
+
 .top-bar {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 10px 20px;
-    background-color: var(--card-bg);
-    border-bottom: 1px solid var(--border-color);
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+    padding:15px 20px;
+
+    background:
+    var(--card-bg);
+
+    border-bottom:
+    1px solid var(--border-color);
+
 }
+
+
 
 .top-bar button {
-    padding: 5px 12px;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-    background: transparent;
-    color: var(--text-color);
-    border-radius: 4px;
+
+
+    padding:
+    8px 15px;
+
+
+    cursor:pointer;
+
+
+    border:
+    1px solid var(--border-color);
+
+
+    border-radius:
+    6px;
+
+
+    background:
+    transparent;
+
+
+    color:
+    var(--text-color);
+
+
+    transition:
+    0.3s;
+
 }
 
-/* Navegação */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: var(--card-bg);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+
+
+.top-bar button:hover {
+
+
+    background:
+    var(--primary-color);
+
+
+    color:white;
+
 }
+
+
+
+
+/* ==========================
+   CABEÇALHO
+========================== */
+
+
+header {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    padding:
+    20px 40px;
+
+
+    background:
+    var(--card-bg);
+
+
+    box-shadow:
+    var(--shadow);
+
+
+    position:sticky;
+
+
+    top:0;
+
+
+    z-index:10;
+
+
+}
+
+
+
+.logo h1 {
+
+    color:
+    var(--primary-color);
+
+}
+
+
+
+/* MENU */
+
 
 nav ul {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
+
+
+    display:flex;
+
+
+    list-style:none;
+
+
+    gap:25px;
+
+
 }
+
+
 
 nav a {
-    text-decoration: none;
-    color: var(--text-color);
-    font-weight: bold;
-    transition: color 0.2s;
+
+
+    text-decoration:none;
+
+
+    color:
+    var(--text-color);
+
+
+    font-weight:bold;
+
+
 }
+
+
 
 nav a:hover {
-    color: var(--primary-color);
+
+
+    color:
+    var(--primary-color);
+
+
 }
 
-/* Seções */
-.section-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 20px;
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
+
+
+
+/* ==========================
+   SEÇÕES
+========================== */
+
 
 .hero-section {
-    text-align: center;
-    padding: 4rem 1rem;
-    background: linear-gradient(135deg, #6b11ff0d, #2200660d);
+
+
+    text-align:center;
+
+
+    padding:
+    80px 20px;
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #4a90e222,
+        #2ecc7122
+    );
+
+
 }
 
-/* Formulário de Escuta */
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    box-sizing: border-box;
-    margin-top: 8px;
+
+
+.hero-section h2 {
+
+
+    font-size:
+    2rem;
+
+
+    margin-bottom:
+    20px;
+
+
 }
+
+
+
+.section-container {
+
+
+    width:
+    90%;
+
+
+    max-width:
+    850px;
+
+
+    margin:
+    40px auto;
+
+
+    padding:
+    25px;
+
+
+    background:
+    var(--card-bg);
+
+
+    border-radius:
+    10px;
+
+
+    box-shadow:
+    var(--shadow);
+
+
+}
+
+
+
+/* ==========================
+   BOTÕES
+========================== */
+
 
 .btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 10px;
-    transition: background-color 0.2s;
+
+
+    display:inline-block;
+
+
+    margin-top:
+    15px;
+
+
+    padding:
+    12px 25px;
+
+
+    background:
+    var(--primary-color);
+
+
+    color:white;
+
+
+    border:none;
+
+
+    border-radius:
+    6px;
+
+
+    cursor:pointer;
+
+
+    text-decoration:none;
+
+
+    transition:
+    0.3s;
+
+
 }
+
+
 
 .btn-primary:hover {
-    background-color: var(--secondary-color);
+
+
+    background:
+    var(--secondary-color);
+
+
+    transform:
+    translateY(-2px);
+
+
 }
 
-.hidden {
-    display: none;
+
+
+
+
+/* ==========================
+   FORMULÁRIO
+========================== */
+
+
+textarea {
+
+
+    width:
+    100%;
+
+
+    height:
+    130px;
+
+
+    margin-top:
+    10px;
+
+
+    padding:
+    12px;
+
+
+    border:
+    1px solid var(--border-color);
+
+
+    border-radius:
+    8px;
+
+
+    resize:
+    vertical;
+
+
+    background:
+    var(--bg-color);
+
+
+    color:
+    var(--text-color);
+
+
 }
+
+
+
 
 #mensagem-resposta {
-    margin-top: 15px;
-    padding: 15px;
-    background-color: #2ecc7122;
-    border: 1px solid var(--accent-color);
-    border-radius: 6px;
+
+
+    margin-top:
+    20px;
+
+
+    padding:
+    15px;
+
+
+    border-radius:
+    8px;
+
+
+    background:
+    #2ecc7122;
+
+
+    border:
+    1px solid var(--accent-color);
+
+
 }
 
-/* Quiz */
-.pergunta-box {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+
+
+.hidden {
+
+
+    display:none;
+
+
 }
+
+
+
+
+/* ==========================
+   QUIZ
+========================== */
+
+
+.pergunta-box {
+
+
+    margin:
+    20px 0;
+
+
+    padding:
+    15px;
+
+
+    border:
+    1px solid var(--border-color);
+
+
+    border-radius:
+    8px;
+
+
+}
+
+
+
+.pergunta-box label {
+
+
+    cursor:pointer;
+
+
+}
+
+
 
 #resultado-quiz {
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 1.2rem;
+
+
+    margin-top:
+    20px;
+
+
+    font-size:
+    1.2rem;
+
+
+    font-weight:bold;
+
+
 }
 
-/* Botão Voltar ao Topo */
+
+
+
+
+/* ==========================
+   BOTÃO VOLTAR AO TOPO
+========================== */
+
+
 #btn-topo {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: none;
-    padding: 12px;
-    border-radius: 50%;
-    border: none;
-    background-color: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+
+
+    position:fixed;
+
+
+    bottom:
+    25px;
+
+
+    right:
+    25px;
+
+
+    display:none;
+
+
+    width:
+    50px;
+
+
+    height:
+    50px;
+
+
+    border:none;
+
+
+    border-radius:
+    50%;
+
+
+    background:
+    var(--primary-color);
+
+
+    color:white;
+
+
+    font-size:
+    25px;
+
+
+    cursor:pointer;
+
+
 }
+
+
+
+
+#btn-topo:hover {
+
+
+    background:
+    var(--secondary-color);
+
+
+}
+
+
+
+
+/* ==========================
+   RODAPÉ
+========================== */
+
 
 footer {
-    text-align: center;
-    padding: 20px;
-    background-color: var(--card-bg);
-    margin-top: 40px;
-    border-top: 1px solid var(--border-color);
-}
-// 1. Simulação do Portal de Escuta
-document.getElementById('form-escuta').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const campoTexto = document.getElementById('desabafo');
-    const painelResposta = document.getElementById('mensagem-resposta');
 
-    if (campoTexto.value.trim() !== "") {
-        painelResposta.className = ""; // Remove a classe 'hidden'
-        painelResposta.innerHTML = `
-            <p><strong>Obrigado por compartilhar!</strong></p>
-            <p>Sua mensagem não foi gravada em nenhum servidor, mas queremos que saiba que seus sentimentos são válidos. Lembre-se: <em>"A coragem não é a ausência do medo, mas a decisão de que algo é mais importante que ele."</em></p>
-            <p>Se estiver enfrentando algo pesado, procure um adulto de confiança na escola!</p>
+
+    text-align:center;
+
+
+    padding:
+    25px;
+
+
+    background:
+    var(--card-bg);
+
+
+    margin-top:
+    50px;
+
+
+    border-top:
+    1px solid var(--border-color);
+
+
+}
+
+
+
+
+
+/* ==========================
+   CELULAR
+========================== */
+
+
+@media(max-width:700px){
+
+
+    header {
+
+
+        flex-direction:
+        column;
+
+
+        gap:
+        20px;
+
+
+    }
+
+
+
+    nav ul {
+
+
+        flex-direction:
+        column;
+
+
+        text-align:center;
+
+
+    }
+
+
+    .top-bar {
+
+
+        justify-content:center;
+
+
+        flex-wrap:wrap;
+
+
+    }
+
+
+}
+// ==========================
+// PORTAL DE ESCUTA
+// ==========================
+
+const formulario = document.getElementById("form-escuta");
+
+formulario.addEventListener("submit", function(event){
+
+    event.preventDefault();
+
+
+    const texto = document.getElementById("desabafo");
+
+    const resposta = document.getElementById("mensagem-resposta");
+
+
+    if(texto.value.trim() !== ""){
+
+
+        resposta.classList.remove("hidden");
+
+
+        resposta.innerHTML = `
+
+        <h3>Obrigado por compartilhar!</h3>
+
+        <p>
+        Sua mensagem foi recebida apenas nesta página
+        e não será armazenada.
+        </p>
+
+        <p>
+        Seus sentimentos são importantes.
+        Procure conversar com alguém de confiança
+        quando precisar.
+        </p>
+
         `;
-        campoTexto.value = ""; // Limpa a área de texto
+
+
+        texto.value = "";
+
+
     }
+
 });
 
-// 2. Cálculo do Quiz
-function calcularQuiz() {
-    let pontuacao = 0;
-    const totalPerguntas = 5;
 
-    for (let i = 1; i <= totalPerguntas; i++) {
-        const opcoes = document.getElementsByName('p' + i);
-        for (const opcao of opcoes) {
-            if (opcao.checked && opcao.value === "1") {
-                pontuacao++;
-            }
+
+
+// ==========================
+// QUIZ
+// ==========================
+
+
+function calcularQuiz(){
+
+
+    let pontos = 0;
+
+
+    for(let i = 1; i <= 5; i++){
+
+
+        const resposta =
+        document.querySelector(
+            `input[name="p${i}"]:checked`
+        );
+
+
+        if(resposta && resposta.value === "1"){
+
+            pontos++;
+
         }
+
+
     }
 
-    const divResultado = document.getElementById('resultado-quiz');
-    divResultado.innerHTML = `Você acertou <strong>${pontuacao}</strong> de ${totalPerguntas} perguntas!`;
+
+
+    const resultado =
+    document.getElementById("resultado-quiz");
+
+
+
+    resultado.innerHTML = `
+
+    Você acertou 
+    <strong>${pontos}</strong>
+    de 5 perguntas!
+
+    `;
+
+
 }
 
-// 3. Diferencial: Alternar Modo Escuro
-const btnTema = document.getElementById('btn-tema');
-btnTema.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
+
+
+
+
+// ==========================
+// MODO ESCURO
+// ==========================
+
+
+const botaoTema =
+document.getElementById("btn-tema");
+
+
+
+botaoTema.addEventListener("click", function(){
+
+
+    document.body.classList.toggle("dark-mode");
+
+
 });
 
-// 4. Diferencial: Aumentar Fonte
-const btnFonte = document.getElementById('btn-fonte');
-let fonteGrande = false;
 
-btnFonte.addEventListener('click', () => {
-    fonteGrande = !fonteGrande;
-    document.body.style.fontSize = fonteGrande ? '18px' : '16px';
-});
 
-// 5. Diferencial: Botão Voltar ao Topo
-const btnTopo = document.getElementById('btn-topo');
 
-window.onscroll = function() {
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-        btnTopo.style.display = "block";
-    } else {
-        btnTopo.style.display = "none";
+
+// ==========================
+// AUMENTAR FONTE
+// ==========================
+
+
+const botaoFonte =
+document.getElementById("btn-fonte");
+
+
+let fonteAumentada = false;
+
+
+
+botaoFonte.addEventListener("click", function(){
+
+
+    if(fonteAumentada === false){
+
+
+        document.body.style.fontSize = "18px";
+
+
+        fonteAumentada = true;
+
+
     }
-};
 
-btnTopo.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    else{
+
+
+        document.body.style.fontSize = "16px";
+
+
+        fonteAumentada = false;
+
+
+    }
+
+
+});
+
+
+
+
+
+// ==========================
+// BOTÃO VOLTAR AO TOPO
+// ==========================
+
+
+const botaoTopo =
+document.getElementById("btn-topo");
+
+
+
+window.addEventListener("scroll", function(){
+
+
+    if(window.scrollY > 300){
+
+
+        botaoTopo.style.display = "block";
+
+
+    }
+
+    else{
+
+
+        botaoTopo.style.display = "none";
+
+
+    }
+
+
+});
+
+
+
+
+
+botaoTopo.addEventListener("click", function(){
+
+
+    window.scrollTo({
+
+
+        top:0,
+
+
+        behavior:"smooth"
+
+
+    });
+
+
 });
