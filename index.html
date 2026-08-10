@@ -1,345 +1,1543 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Portal de Apoio ao Estudante</title>
-
-    <link rel="stylesheet" href="estilo.css">
-
-    <link rel="stylesheet" 
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-
-<body>
-
-    <!-- Barra de acessibilidade -->
-    <div class="top-bar">
-
-        <button id="btn-fonte">
-            <i class="fa-solid fa-text-height"></i>
-            Aumentar Fonte
-        </button>
-
-        <button id="btn-tema">
-            <i class="fa-solid fa-moon"></i>
-            Modo Escuro
-        </button>
-
-    </div>
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/NotFound";
+import { Route, Switch } from "wouter";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import Home from "./pages/Home";
+import PortalEscuta from "./pages/PortalEscuta";
+import Quiz from "./pages/Quiz";
+import Referencias from "./pages/Referencias";
 
 
-    <!-- Cabeçalho -->
-    <header>
+function Router() {
+  return (
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/escuta" component={PortalEscuta} />
+      <Route path="/quiz" component={Quiz} />
+      <Route path="/referencias" component={Referencias} />
+      <Route path="/404" component={NotFound} />
+      {/* Final fallback route */}
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
 
-        <div class="logo">
-            <h1>
-                <i class="fa-solid fa-heart-pulse"></i>
-                Portal Conecta
-            </h1>
+// NOTE: About Theme
+// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
+//   to keep consistent foreground/background color across components
+// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider
+        defaultTheme="light"
+        switchable
+      >
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default App;
+import { useState, useEffect } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Button } from '@/components/ui/button';
+import { Menu, X, Moon, Sun, Plus, Contrast } from 'lucide-react';
+
+export default function Header() {
+  const { theme, toggleTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [fontSize, setFontSize] = useState(100);
+  const [highContrast, setHighContrast] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontSize}%`;
+  }, [fontSize]);
+
+  useEffect(() => {
+    if (highContrast) {
+      document.documentElement.classList.add('high-contrast');
+    } else {
+      document.documentElement.classList.remove('high-contrast');
+    }
+  }, [highContrast]);
+
+  const navItems = [
+    { label: 'Início', href: '#home' },
+    { label: 'Portal de Escuta', href: '#escuta' },
+    { label: 'Quiz', href: '#quiz' },
+    { label: 'Referências', href: '#referencias' },
+  ];
+
+  return (
+    <header className="sticky top-0 z-50 bg-background border-b border-border shadow-sm">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <img src="/manus-storage/logo-portal_c2c3a406.png" alt="Portal Logo" className="h-10 w-10" />
+          <div className="hidden sm:block">
+            <h1 className="text-xl font-bold text-primary">Portal Apoio</h1>
+            <p className="text-xs text-muted-foreground">Saúde Emocional</p>
+          </div>
         </div>
 
-
-        <nav>
-
-            <ul>
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#escuta">Escuta</a></li>
-                <li><a href="#quiz">Quiz</a></li>
-                <li><a href="#ajuda">Ajuda</a></li>
-            </ul>
-
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-6">
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="text-foreground hover:text-primary transition-colors font-medium"
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
 
+        {/* Accessibility Controls */}
+        <div className="flex items-center gap-2">
+          {/* Font Size Control */}
+          <div className="hidden sm:flex items-center gap-1 bg-muted rounded-lg p-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFontSize(Math.max(80, fontSize - 10))}
+              title="Diminuir tamanho da fonte"
+              className="h-8 w-8 p-0"
+            >
+              <span className="text-xs font-bold">A−</span>
+            </Button>
+            <span className="text-xs font-medium text-muted-foreground w-8 text-center">{fontSize}%</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFontSize(Math.min(150, fontSize + 10))}
+              title="Aumentar tamanho da fonte"
+              className="h-8 w-8 p-0"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* High Contrast Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setHighContrast(!highContrast)}
+            title="Alternar alto contraste"
+            className="h-9 w-9 p-0"
+          >
+            <Contrast className="h-5 w-5" />
+          </Button>
+
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            title={`Ativar modo ${theme === 'light' ? 'escuro' : 'claro'}`}
+            className="h-9 w-9 p-0"
+          >
+            {theme === 'light' ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
+          </Button>
+
+          {/* Mobile Menu Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden h-9 w-9 p-0"
+          >
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <nav className="md:hidden border-t border-border bg-card">
+          <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-foreground hover:text-primary transition-colors font-medium py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+      )}
     </header>
+  );
+}
+import { Heart, Phone, Mail } from 'lucide-react';
 
-
-
-    <main>
-
-
-        <!-- Página inicial -->
-        <section id="inicio" class="hero-section">
-
-            <h2>
-                Bem-vindo ao Portal de Apoio ao Estudante
-            </h2>
-
-            <p>
-                Um espaço de informação, acolhimento e orientação
-                para estudantes.
+export default function Footer() {
+  return (
+    <footer className="bg-card border-t border-border mt-16">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* About */}
+          <div>
+            <h3 className="font-bold text-lg mb-4 text-primary">Portal de Apoio</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Um espaço seguro e acolhedor para estudantes cuidarem de sua saúde emocional e bem-estar no ambiente escolar.
             </p>
+          </div>
 
-            <a href="#escuta" class="btn-primary">
-                Preciso conversar
-            </a>
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-bold text-lg mb-4 text-primary">Links Rápidos</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="#home" className="text-muted-foreground hover:text-primary transition-colors">
+                  Página Inicial
+                </a>
+              </li>
+              <li>
+                <a href="#escuta" className="text-muted-foreground hover:text-primary transition-colors">
+                  Portal de Escuta
+                </a>
+              </li>
+              <li>
+                <a href="#quiz" className="text-muted-foreground hover:text-primary transition-colors">
+                  Quiz Interativo
+                </a>
+              </li>
+              <li>
+                <a href="#referencias" className="text-muted-foreground hover:text-primary transition-colors">
+                  Referências
+                </a>
+              </li>
+            </ul>
+          </div>
 
-        </section>
-
-
-
-
-        <!-- Portal de escuta -->
-        <section id="escuta" class="section-container">
-
-            <h2>
-                <i class="fa-solid fa-comments"></i>
-                Portal de Escuta
-            </h2>
-
-
-            <p>
-                Este espaço permite escrever seus sentimentos.
-                Nenhuma mensagem será armazenada.
-            </p>
-
-
-
-            <form id="form-escuta">
-
-                <label for="desabafo">
-                    Escreva o que está sentindo:
-                </label>
-
-
-                <textarea 
-                id="desabafo"
-                placeholder="Digite sua mensagem..."
-                required></textarea>
-
-
-
-                <button class="btn-primary" type="submit">
-                    Enviar
-                </button>
-
-
-            </form>
-
-
-
-            <div id="mensagem-resposta" class="hidden"></div>
-
-
-        </section>
-
-
-
-
-
-
-        <!-- Quiz -->
-        <section id="quiz" class="section-container">
-
-
-            <h2>
-                <i class="fa-solid fa-circle-question"></i>
-                Quiz de Conhecimentos
-            </h2>
-
-
-
-            <div class="pergunta-box">
-
-                <p>
-                    1 - Respeitar os colegas ajuda a criar:
-                </p>
-
-                <label>
-                    <input type="radio" name="p1" value="1">
-                    Um ambiente saudável
-                </label>
-
-                <br>
-
-                <label>
-                    <input type="radio" name="p1" value="0">
-                    Mais conflitos
-                </label>
-
+          {/* Support */}
+          <div>
+            <h3 className="font-bold text-lg mb-4 text-primary">Precisa de Ajuda?</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Phone className="h-4 w-4" />
+                <span>CVV: <strong>188</strong></span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Mail className="h-4 w-4" />
+                <span>Fale com a coordenação</span>
+              </div>
             </div>
-
-
-
-
-            <div class="pergunta-box">
-
-                <p>
-                    2 - Ao sofrer bullying, o correto é:
-                </p>
-
-                <label>
-                    <input type="radio" name="p2" value="1">
-                    Procurar ajuda
-                </label>
-
-                <br>
-
-                <label>
-                    <input type="radio" name="p2" value="0">
-                    Guardar tudo sozinho
-                </label>
-
-            </div>
-
-
-
-
-
-            <div class="pergunta-box">
-
-                <p>
-                    3 - Uma senha segura deve ter:
-                </p>
-
-
-                <label>
-                    <input type="radio" name="p3" value="1">
-                    Letras, números e símbolos
-                </label>
-
-                <br>
-
-
-                <label>
-                    <input type="radio" name="p3" value="0">
-                    Apenas seu nome
-                </label>
-
-
-            </div>
-
-
-
-
-
-            <div class="pergunta-box">
-
-                <p>
-                    4 - Ouvir alguém com atenção é:
-                </p>
-
-
-                <label>
-                    <input type="radio" name="p4" value="1">
-                    Praticar empatia
-                </label>
-
-                <br>
-
-
-                <label>
-                    <input type="radio" name="p4" value="0">
-                    Ignorar sentimentos
-                </label>
-
-
-            </div>
-
-
-
-
-
-            <div class="pergunta-box">
-
-                <p>
-                    5 - Quando alguém precisa de ajuda devemos:
-                </p>
-
-
-                <label>
-                    <input type="radio" name="p5" value="1">
-                    Apoiar e orientar
-                </label>
-
-                <br>
-
-
-                <label>
-                    <input type="radio" name="p5" value="0">
-                    Fazer piadas
-                </label>
-
-
-            </div>
-
-
-
-            <button 
-            onclick="calcularQuiz()" 
-            class="btn-primary">
-
-                Finalizar Quiz
-
-            </button>
-
-
-
-            <div id="resultado-quiz"></div>
-
-
-        </section>
-
-
-
-
-
-
-        <!-- Ajuda -->
-        <section id="ajuda" class="section-container">
-
-
-            <h2>
-                <i class="fa-solid fa-hand-holding-heart"></i>
-                Precisa de ajuda?
-            </h2>
-
-
-            <p>
-                Procure um professor, familiar ou pessoa de confiança.
-            </p>
-
-
-            <p>
-                CVV: Ligue 188 para apoio emocional.
-            </p>
-
-
-        </section>
-
-
-
-    </main>
-
-
-
-
-
-    <!-- Botão topo -->
-
-    <button id="btn-topo">
-        ↑
-    </button>
-
-
-
-
-
-    <footer>
-
-        <p>
-            Projeto Escolar - Portal de Apoio ao Estudante
-        </p>
-
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-border my-8"></div>
+
+        {/* Bottom */}
+        <div className="flex flex-col md:flex-row items-center justify-between text-sm text-muted-foreground">
+          <p className="flex items-center gap-2">
+            Desenvolvido com <Heart className="h-4 w-4 text-accent" /> para sua saúde emocional
+          </p>
+          <p>&copy; 2024 Portal de Apoio ao Estudante. Todos os direitos reservados.</p>
+        </div>
+      </div>
     </footer>
+  );
+}
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ImageCarousel from '@/components/ImageCarousel';
+import { ArrowRight, Heart, Users, Brain, BookOpen } from 'lucide-react';
 
+export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    <script src="script.js"></script>
+  const features = [
+    {
+      icon: Heart,
+      title: 'Portal de Escuta',
+      description: 'Um espaço seguro para compartilhar seus sentimentos e receber orientações de acolhimento.',
+      href: '#escuta',
+    },
+    {
+      icon: Brain,
+      title: 'Quiz Interativo',
+      description: 'Teste seus conhecimentos sobre saúde emocional e bem-estar mental.',
+      href: '#quiz',
+    },
+    {
+      icon: Users,
+      title: 'Comunidade de Apoio',
+      description: 'Saiba que você não está sozinho. Existem pessoas e instituições prontas para ajudar.',
+      href: '#referencias',
+    },
+    {
+      icon: BookOpen,
+      title: 'Informações Confiáveis',
+      description: 'Acesse referências de fontes confiáveis sobre saúde emocional e bem-estar.',
+      href: '#referencias',
+    },
+  ];
 
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
 
-</body>
+      {/* Hero Section */}
+      <section id="home" className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-32">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Text Content */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+                  Sua Mente <span className="text-primary">Importa</span>
+                </h1>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Bem-vindo ao Portal de Apoio ao Estudante. Meu nome é Gabriel. Aqui você encontrará informações, orientações e apoio sobre situações vivenciadas no ambiente escolar.
+                </p>
+                <p className="text-base text-muted-foreground">
+                  Acreditamos que cuidar da mente é tão importante quanto cuidar do corpo. Sinta-se acolhido e saiba que você não está sozinho em sua jornada.
+                </p>
+              </div>
 
-</html>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                  Começar <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button size="lg" variant="outline">
+                  Saiba Mais
+                </Button>
+              </div>
+            </div>
+
+            {/* Hero Image */}
+            <div className="relative h-96 md:h-full rounded-2xl overflow-hidden shadow-lg">
+              <img
+                src="/manus-storage/hero-saude-emocional_b46c0c2d.png"
+                alt="Estudantes em ambiente acolhedor"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 md:py-24 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Como Podemos Ajudar?
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore as diferentes formas de apoio disponíveis para sua saúde emocional e bem-estar.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card
+                  key={index}
+                  className="p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/50 group cursor-pointer"
+                  onClick={() => {
+                    const element = document.querySelector(feature.href);
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                      <Icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-foreground mb-2">{feature.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Image Carousel Section */}
+      <section className="py-16 md:py-24 bg-card border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8 text-center">
+              Momentos de <span className="text-primary">Bem-Estar</span>
+            </h2>
+            <ImageCarousel
+              images={[
+                {
+                  src: '/manus-storage/hero-saude-emocional_b46c0c2d.png',
+                  alt: 'Estudantes em ambiente acolhedor',
+                  title: 'Comunidade de Apoio',
+                },
+                {
+                  src: '/manus-storage/escuta-acolhimento_69efe7d6.png',
+                  alt: 'Escuta e acolhimento',
+                  title: 'Portal de Escuta',
+                },
+                {
+                  src: '/manus-storage/bem-estar-mental_96c9b2d2.png',
+                  alt: 'Bem-estar e saúde mental',
+                  title: 'Bem-Estar Mental',
+                },
+                {
+                  src: '/manus-storage/comunidade-apoio_902f7774.png',
+                  alt: 'Comunidade inclusiva',
+                  title: 'Inclusão e Respeito',
+                },
+              ]}
+              autoPlay={true}
+              interval={5000}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Motivational Section */}
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-8 md:p-12 border border-primary/20">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                Lembre-se: Você Não Está Sozinho
+              </h2>
+              <div className="space-y-4">
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Muitos estudantes enfrentam desafios emocionais. Pedir ajuda não é sinal de fraqueza, mas de coragem e inteligência emocional.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Existem pessoas e instituições preparadas para apoiá-lo. Professores, pedagogos, psicólogos e familiares estão aqui para ajudar.
+                </p>
+              </div>
+              <Button size="lg" className="bg-primary hover:bg-primary/90 mt-6">
+                Explorar Portal de Escuta
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Back to Top Button */}
+      {scrolled && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-8 right-8 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300 z-40"
+          title="Voltar ao topo"
+        >
+          <ArrowRight className="h-5 w-5 rotate-[-90deg]" />
+        </button>
+      )}
+
+      <Footer />
+    </div>
+  );
+}import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Heart, Send, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
+
+export default function PortalEscuta() {
+  const [desabafo, setDesabafo] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const motivationalPhrases = [
+    'Você é mais forte do que imagina.',
+    'Pedir ajuda não é sinal de fraqueza, mas de coragem.',
+    'Tudo bem não estar bem o tempo todo.',
+    'Pequenos passos também levam a grandes destinos.',
+    'Você merece cuidado e atenção.',
+    'Sua saúde emocional é importante.',
+    'Cada dia é uma nova oportunidade.',
+    'Você não está sozinho nessa jornada.',
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (desabafo.trim()) {
+      setSubmitted(true);
+      setDesabafo('');
+      toast.success('Desabafo recebido com carinho!');
+      setTimeout(() => setSubmitted(false), 5000);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="py-12 md:py-20 bg-card border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+              Portal de <span className="text-primary">Escuta</span>
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Um espaço seguro e confidencial para compartilhar seus sentimentos e desabafos.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section id="escuta" className="py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Form Section */}
+            <div className="lg:col-span-2">
+              <Card className="p-8">
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground mb-2">
+                      Compartilhe Seu Desabafo
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Este é um espaço seguro. Suas palavras serão ouvidas com empatia e respeito.
+                    </p>
+                  </div>
+
+                  {submitted ? (
+                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-6 w-6 text-primary" />
+                        <h3 className="font-bold text-lg text-foreground">Obrigado por compartilhar!</h3>
+                      </div>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Seus sentimentos são válidos e importantes. Saiba que você não está sozinho.
+                      </p>
+                      <div className="bg-background rounded-lg p-4 border border-border">
+                        <p className="text-sm font-semibold text-foreground mb-3">
+                          Próximos passos recomendados:
+                        </p>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• Converse com um professor ou pedagogo de confiança</li>
+                          <li>• Procure a coordenação pedagógica da sua escola</li>
+                          <li>• Fale com seus pais ou responsáveis</li>
+                          <li>• Se precisar de ajuda urgente, ligue para o CVV: 188</li>
+                        </ul>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <Textarea
+                        placeholder="Escreva aqui o que você está sentindo... Não há limite de caracteres e tudo é confidencial."
+                        value={desabafo}
+                        onChange={(e) => setDesabafo(e.target.value)}
+                        className="min-h-48 resize-none"
+                      />
+                      <div className="flex gap-3">
+                        <Button
+                          type="submit"
+                          size="lg"
+                          className="bg-primary hover:bg-primary/90 flex-1"
+                          disabled={!desabafo.trim()}
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Enviar Desabafo
+                        </Button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            {/* Sidebar - Motivational Phrases */}
+            <div className="lg:col-span-1">
+              <Card className="p-6 sticky top-24 bg-gradient-to-br from-primary/5 to-accent/5">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-primary" />
+                    <h3 className="font-bold text-lg text-foreground">Frases de Acolhimento</h3>
+                  </div>
+
+                  <div className="space-y-3">
+                    {motivationalPhrases.map((phrase, index) => (
+                      <div
+                        key={index}
+                        className="p-3 bg-background rounded-lg border border-border hover:border-primary/30 transition-colors"
+                      >
+                        <p className="text-sm text-muted-foreground italic">"{phrase}"</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          {/* Support Resources */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6 border-l-4 border-l-primary">
+              <h3 className="font-bold text-lg text-foreground mb-3">Na Escola</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>✓ Professor de confiança</li>
+                <li>✓ Pedagogo</li>
+                <li>✓ Psicólogo escolar</li>
+                <li>✓ Coordenação pedagógica</li>
+                <li>✓ Direção da escola</li>
+              </ul>
+            </Card>
+
+            <Card className="p-6 border-l-4 border-l-accent">
+              <h3 className="font-bold text-lg text-foreground mb-3">Em Casa</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>✓ Pais ou responsáveis</li>
+                <li>✓ Familiares de confiança</li>
+                <li>✓ Amigos próximos</li>
+                <li>✓ Psicólogo particular</li>
+                <li>✓ Médico de família</li>
+              </ul>
+            </Card>
+
+            <Card className="p-6 border-l-4 border-l-destructive">
+              <h3 className="font-bold text-lg text-foreground mb-3">Emergência</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>✓ CVV: <strong>188</strong></li>
+                <li>✓ Disponível 24h</li>
+                <li>✓ Ligação gratuita</li>
+                <li>✓ Conversa confidencial</li>
+                <li>✓ Sem julgamentos</li>
+              </ul>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { CheckCircle, XCircle, RotateCcw, Brain } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface Question {
+  id: number;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
+const quizQuestions: Question[] = [
+  {
+    id: 1,
+    question: 'Sentir-se triste ou estressado em períodos de provas é algo comum?',
+    options: [
+      'Sim, é uma reação natural ao estresse, mas deve ser observada.',
+      'Não, significa que você tem um problema grave.',
+      'Apenas alguns estudantes sentem isso.',
+      'Nunca é normal sentir estresse na escola.',
+    ],
+    correctAnswer: 0,
+    explanation:
+      'É completamente normal sentir estresse e tristeza durante períodos desafiadores. O importante é reconhecer esses sentimentos e buscar apoio quando necessário.',
+  },
+  {
+    id: 2,
+    question: 'Qual é a melhor atitude ao perceber que um amigo está muito isolado e triste?',
+    options: [
+      'Ignorar para não incomodar.',
+      'Oferecer escuta e sugerir que ele procure ajuda profissional.',
+      'Contar para outros amigos.',
+      'Esperar que ele procure ajuda sozinho.',
+    ],
+    correctAnswer: 1,
+    explanation:
+      'Oferecer apoio e escuta é fundamental. Sugerir ajuda profissional mostra que você se importa e reconhece a importância de buscar suporte especializado.',
+  },
+  {
+    id: 3,
+    question: 'Ter uma rotina de sono regular influencia na saúde mental?',
+    options: [
+      'Sim, o sono regula o humor e a concentração.',
+      'Não, o sono só afeta o cansaço físico.',
+      'Apenas para crianças pequenas.',
+      'O sono não tem relação com saúde mental.',
+    ],
+    correctAnswer: 0,
+    explanation:
+      'O sono é fundamental para a saúde mental. Dormir bem regula o humor, melhora a concentração e fortalece a capacidade de lidar com estresse.',
+  },
+  {
+    id: 4,
+    question: 'Pedir ajuda psicológica é:',
+    options: [
+      'Um sinal de que você é fraco.',
+      'Um ato de autocuidado e inteligência emocional.',
+      'Algo que apenas pessoas com problemas graves fazem.',
+      'Uma admissão de fracasso.',
+    ],
+    correctAnswer: 1,
+    explanation:
+      'Pedir ajuda é um ato de coragem e inteligência emocional. Demonstra autoconhecimento e vontade de cuidar da sua saúde mental.',
+  },
+  {
+    id: 5,
+    question: 'Qual dessas práticas ajuda a reduzir a ansiedade no dia a dia?',
+    options: [
+      'Ficar horas nas redes sociais antes de dormir.',
+      'Praticar atividades físicas e técnicas de respiração.',
+      'Evitar conversar sobre seus sentimentos.',
+      'Manter uma rotina desorganizada.',
+    ],
+    correctAnswer: 1,
+    explanation:
+      'Atividades físicas e técnicas de respiração são comprovadamente eficazes para reduzir ansiedade. Exercício libera endorfinas e respiração profunda acalma o sistema nervoso.',
+  },
+];
+
+export default function Quiz() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [quizFinished, setQuizFinished] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState<(number | null)[]>(
+    new Array(quizQuestions.length).fill(null)
+  );
+
+  const handleAnswerClick = (index: number) => {
+    if (!showResult) {
+      setSelectedAnswer(index);
+    }
+  };
+
+  const handleSubmitAnswer = () => {
+    if (selectedAnswer === null) {
+      toast.error('Por favor, selecione uma resposta');
+      return;
+    }
+
+    const isCorrect = selectedAnswer === quizQuestions[currentQuestion].correctAnswer;
+    if (isCorrect) {
+      setScore(score + 1);
+      toast.success('Resposta correta!');
+    } else {
+      toast.error('Resposta incorreta');
+    }
+
+    const newAnswered = [...answeredQuestions];
+    newAnswered[currentQuestion] = selectedAnswer;
+    setAnsweredQuestions(newAnswered);
+    setShowResult(true);
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestion < quizQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(answeredQuestions[currentQuestion + 1]);
+      setShowResult(false);
+    } else {
+      setQuizFinished(true);
+    }
+  };
+
+  const handleRestart = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowResult(false);
+    setSelectedAnswer(null);
+    setQuizFinished(false);
+    setAnsweredQuestions(new Array(quizQuestions.length).fill(null));
+  };
+
+  const question = quizQuestions[currentQuestion];
+  const percentage = Math.round((score / quizQuestions.length) * 100);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="py-12 md:py-20 bg-card border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Brain className="h-8 w-8 text-primary" />
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+                Quiz Interativo
+              </h1>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Teste seus conhecimentos sobre saúde emocional e bem-estar mental.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Quiz Section */}
+      <section id="quiz" className="py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto">
+            {quizFinished ? (
+              <Card className="p-8 text-center space-y-6">
+                <div className="space-y-4">
+                  <h2 className="text-3xl font-bold text-foreground">Parabéns!</h2>
+                  <p className="text-lg text-muted-foreground">
+                    Você completou o quiz sobre saúde emocional.
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg p-8 border border-primary/20">
+                  <div className="space-y-4">
+                    <div className="text-5xl font-bold text-primary">{percentage}%</div>
+                    <div className="text-2xl font-bold text-foreground">
+                      {score} de {quizQuestions.length} respostas corretas
+                    </div>
+                    <p className="text-muted-foreground">
+                      {percentage === 100
+                        ? 'Excelente! Você tem um ótimo conhecimento sobre saúde emocional!'
+                        : percentage >= 80
+                          ? 'Muito bom! Você demonstra conhecimento sólido sobre o tema.'
+                          : percentage >= 60
+                            ? 'Bom! Continue aprendendo sobre saúde emocional.'
+                            : 'Continue estudando! Saúde emocional é importante para todos.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Button size="lg" className="w-full bg-primary hover:bg-primary/90" onClick={handleRestart}>
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Fazer Quiz Novamente
+                  </Button>
+                  <Button size="lg" variant="outline" className="w-full" onClick={() => window.location.href = '#referencias'}>
+                    Ver Referências
+                  </Button>
+                </div>
+              </Card>
+            ) : (
+              <Card className="p-8">
+                {/* Progress Bar */}
+                <div className="mb-8">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Pergunta {currentQuestion + 1} de {quizQuestions.length}
+                    </span>
+                    <span className="text-sm font-medium text-primary">{score} acertos</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div
+                      className="bg-primary h-2 rounded-full transition-all duration-300"
+                      style={{
+                        width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Question */}
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-bold text-foreground">{question.question}</h2>
+
+                  {/* Options */}
+                  <div className="space-y-3">
+                    {question.options.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleAnswerClick(index)}
+                        className={`w-full p-4 text-left rounded-lg border-2 transition-all ${
+                          selectedAnswer === index
+                            ? 'border-primary bg-primary/10'
+                            : 'border-border hover:border-primary/50'
+                        } ${
+                          showResult && index === question.correctAnswer
+                            ? 'border-green-500 bg-green-500/10'
+                            : ''
+                        } ${
+                          showResult && selectedAnswer === index && index !== question.correctAnswer
+                            ? 'border-red-500 bg-red-500/10'
+                            : ''
+                        }`}
+                        disabled={showResult}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                              selectedAnswer === index
+                                ? 'border-primary bg-primary'
+                                : 'border-border'
+                            }`}
+                          >
+                            {selectedAnswer === index && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                          <span className="text-foreground">{option}</span>
+                          {showResult && index === question.correctAnswer && (
+                            <CheckCircle className="ml-auto h-5 w-5 text-green-500" />
+                          )}
+                          {showResult && selectedAnswer === index && index !== question.correctAnswer && (
+                            <XCircle className="ml-auto h-5 w-5 text-red-500" />
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Explanation */}
+                  {showResult && (
+                    <div className="bg-muted/50 rounded-lg p-4 border border-border">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Explicação:</strong> {question.explanation}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Buttons */}
+                  <div className="flex gap-3 pt-4">
+                    {!showResult ? (
+                      <Button
+                        size="lg"
+                        className="w-full bg-primary hover:bg-primary/90"
+                        onClick={handleSubmitAnswer}
+                      >
+                        Responder
+                      </Button>
+                    ) : (
+                      <Button
+                        size="lg"
+                        className="w-full bg-primary hover:bg-primary/90"
+                        onClick={handleNextQuestion}
+                      >
+                        {currentQuestion === quizQuestions.length - 1 ? 'Ver Resultado' : 'Próxima Pergunta'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { ExternalLink, BookOpen, Globe, Building2 } from 'lucide-react';
+
+interface Reference {
+  title: string;
+  organization: string;
+  type: 'government' | 'institution' | 'health' | 'research';
+  description: string;
+  url: string;
+}
+
+const references: Reference[] = [
+  {
+    title: 'Saúde Mental - Portal Oficial',
+    organization: 'Ministério da Saúde - Governo Federal',
+    type: 'government',
+    description:
+      'Informações oficiais sobre políticas de saúde mental, orientações e recursos disponibilizados pelo governo brasileiro.',
+    url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-mental',
+  },
+  {
+    title: 'Adolescências, escola e saúde mental: o acolhimento',
+    organization: 'SciELO - Plataforma de Pesquisa',
+    type: 'research',
+    description:
+      'Artigo científico que aborda o acolhimento como fator fundamental para a saúde mental de adolescentes no ambiente escolar.',
+    url: 'https://www.scielo.br/j/pp/a/QWnQr4rTBM4LFPgsp5gwGTK/',
+  },
+  {
+    title: 'Cuidados com a saúde mental na trajetória escolar',
+    organization: 'IFPB - Instituto Federal de Pernambuco',
+    type: 'institution',
+    description:
+      'Guia prático sobre como cuidar da saúde mental durante a vida escolar, com dicas e orientações para estudantes.',
+    url: 'https://www.ifpb.edu.br/noticias/2024/11/cuidados-com-a-saude-mental-na-trajetoria-escolar',
+  },
+  {
+    title: 'A importância da saúde mental nas escolas',
+    organization: 'Instituto Pensi',
+    type: 'health',
+    description:
+      'Dicas para pais, cuidadores e educadores sobre como promover saúde mental nas escolas e em casa.',
+    url: 'https://institutopensi.org.br/a-importancia-da-saude-mental-nas-escolas-dicas-para-pais-cuidadores-e-educadores',
+  },
+  {
+    title: 'CVV - Centro de Valorização da Vida',
+    organization: 'CVV',
+    type: 'health',
+    description:
+      'Serviço de apoio emocional disponível 24h por dia. Ligação gratuita para o número 188. Atendimento confidencial e sem julgamentos.',
+    url: 'https://www.cvv.org.br/',
+  },
+  {
+    title: 'Conversando sobre Saúde Mental e Emocional',
+    organization: 'Secretaria de Educação de São Paulo',
+    type: 'government',
+    description:
+      'Material educativo sobre saúde mental e emocional para estudantes, professores e familiares.',
+    url: 'https://efape.educacao.sp.gov.br/',
+  },
+];
+
+const typeIcons = {
+  government: Building2,
+  institution: BookOpen,
+  health: Globe,
+  research: BookOpen,
+};
+
+const typeLabels = {
+  government: 'Governo',
+  institution: 'Instituição',
+  health: 'Saúde',
+  research: 'Pesquisa',
+};
+
+const typeColors = {
+  government: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100',
+  institution: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-100',
+  health: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100',
+  research: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100',
+};
+
+export default function Referencias( ) {
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="py-12 md:py-20 bg-card border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+              Referências e <span className="text-primary">Recursos</span>
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Fontes confiáveis sobre saúde emocional e bem-estar mental para estudantes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* References Section */}
+      <section id="referencias" className="py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          {/* Info Box */}
+          <div className="max-w-3xl mx-auto mb-12 bg-primary/10 border border-primary/20 rounded-lg p-6">
+            <p className="text-muted-foreground leading-relaxed">
+              Todas as referências abaixo foram selecionadas de fontes confiáveis, incluindo órgãos governamentais,
+              instituições de ensino, organizações de saúde e artigos científicos. Utilize esses recursos para aprofundar
+              seus conhecimentos sobre saúde emocional e bem-estar mental.
+            </p>
+          </div>
+
+          {/* References Grid */}
+          <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
+            {references.map((ref, index) => {
+              const Icon = typeIcons[ref.type];
+              return (
+                <Card key={index} className="p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex flex-col md:flex-row md:items-start gap-4">
+                    {/* Icon */}
+                    <div className="flex-shrink-0">
+                      <div className="p-3 bg-primary/10 rounded-lg">
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-3">
+                        <div>
+                          <h3 className="font-bold text-lg text-foreground">{ref.title}</h3>
+                          <p className="text-sm text-muted-foreground">{ref.organization}</p>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${typeColors[ref.type]}`}>
+                          {typeLabels[ref.type]}
+                        </span>
+                      </div>
+
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">{ref.description}</p>
+
+                      <a href={ref.url} target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" size="sm" className="gap-2">
+                          Acessar Recurso
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Additional Info */}
+          <div className="max-w-4xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6 bg-gradient-to-br from-primary/5 to-transparent">
+              <h3 className="font-bold text-lg text-foreground mb-4">Quando Procurar Ajuda</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>✓ Sentimentos persistentes de tristeza ou vazio</li>
+                <li>✓ Dificuldade em concentrar-se nos estudos</li>
+                <li>✓ Mudanças no apetite ou sono</li>
+                <li>✓ Isolamento social</li>
+                <li>✓ Pensamentos de automutilação</li>
+                <li>✓ Qualquer situação que o deixe desconfortável</li>
+              </ul>
+            </Card>
+
+            <Card className="p-6 bg-gradient-to-br from-accent/5 to-transparent">
+              <h3 className="font-bold text-lg text-foreground mb-4">Pessoas que Podem Ajudar</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>✓ Pais ou responsáveis</li>
+                <li>✓ Professores de confiança</li>
+                <li>✓ Pedagogos e psicólogos escolares</li>
+                <li>✓ Médicos e psicólogos</li>
+                <li>✓ Amigos e familiares próximos</li>
+                <li>✓ Profissionais especializados</li>
+              </ul>
+            </Card>
+          </div>
+
+          {/* Emergency Contact */}
+          <div className="max-w-4xl mx-auto mt-12 bg-destructive/10 border border-destructive/20 rounded-lg p-8 text-center">
+            <h3 className="font-bold text-lg text-foreground mb-3">Em Caso de Emergência</h3>
+            <p className="text-muted-foreground mb-4">
+              Se você está em risco de se machucar ou tendo pensamentos suicidas, procure ajuda imediatamente.
+            </p>
+            <div className="space-y-2">
+              <div className="text-2xl font-bold text-destructive">CVV: 188</div>
+              <p className="text-sm text-muted-foreground">Disponível 24 horas, 7 dias por semana</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+interface CarouselImage {
+  src: string;
+  alt: string;
+  title: string;
+}
+
+interface ImageCarouselProps {
+  images: CarouselImage[];
+  autoPlay?: boolean;
+  interval?: number;
+}
+
+export default function ImageCarousel({ images, autoPlay = true, interval = 5000 }: ImageCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [autoPlay, interval, images.length]);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  return (
+    <div className="relative w-full bg-background rounded-2xl overflow-hidden shadow-lg">
+      {/* Main Carousel */}
+      <div className="relative h-96 md:h-96 overflow-hidden">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              index === currentIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img src={image.src} alt={image.alt} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            {image.title && (
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold">{image.title}</h3>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation Buttons */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={goToPrevious}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-foreground"
+        aria-label="Imagem anterior"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={goToNext}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-foreground"
+        aria-label="Próxima imagem"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </Button>
+
+      {/* Dots Indicator */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === currentIndex ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/75'
+            }`}
+            aria-label={`Ir para slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --primary: oklch(0.52 0.13 165);
+  --primary-foreground: oklch(0.98 0.001 0);
+  --sidebar-primary: oklch(0.50 0.12 165);
+  --sidebar-primary-foreground: oklch(0.98 0.001 0);
+  --chart-1: oklch(0.62 0.12 165);
+  --chart-2: oklch(0.52 0.13 165);
+  --chart-3: oklch(0.48 0.12 165);
+  --chart-4: oklch(0.43 0.11 165);
+  --chart-5: oklch(0.38 0.10 165);
+  --radius: 0.75rem;
+  --background: oklch(0.96 0.01 70);
+  --foreground: oklch(0.25 0.01 65);
+  --card: oklch(0.98 0.005 70);
+  --card-foreground: oklch(0.25 0.01 65);
+  --popover: oklch(0.98 0.005 70);
+  --popover-foreground: oklch(0.25 0.01 65);
+  --secondary: oklch(0.90 0.02 60);
+  --secondary-foreground: oklch(0.30 0.01 65);
+  --muted: oklch(0.85 0.02 70);
+  --muted-foreground: oklch(0.50 0.01 65);
+  --accent: oklch(0.65 0.14 35);
+  --accent-foreground: oklch(0.98 0.001 0);
+  --destructive: oklch(0.60 0.20 20);
+  --destructive-foreground: oklch(0.98 0.001 0);
+  --border: oklch(0.90 0.01 70);
+  --input: oklch(0.92 0.01 70);
+  --ring: oklch(0.52 0.13 165);
+  --sidebar: oklch(0.98 0.005 70);
+  --sidebar-foreground: oklch(0.25 0.01 65);
+  --sidebar-accent: oklch(0.85 0.02 70);
+  --sidebar-accent-foreground: oklch(0.25 0.01 65);
+  --sidebar-border: oklch(0.90 0.01 70);
+  --sidebar-ring: oklch(0.52 0.13 165);
+}
+
+.dark {
+  --primary: oklch(0.65 0.12 165);
+  --primary-foreground: oklch(0.98 0.001 0);
+  --sidebar-primary: oklch(0.60 0.11 165);
+  --sidebar-primary-foreground: oklch(0.98 0.001 0);
+  --background: oklch(0.15 0.01 165);
+  --foreground: oklch(0.92 0.01 65);
+  --card: oklch(0.20 0.01 165);
+  --card-foreground: oklch(0.92 0.01 65);
+  --popover: oklch(0.20 0.01 165);
+  --popover-foreground: oklch(0.92 0.01 65);
+  --secondary: oklch(0.25 0.01 165);
+  --secondary-foreground: oklch(0.80 0.01 65);
+  --muted: oklch(0.30 0.01 165);
+  --muted-foreground: oklch(0.70 0.01 65);
+  --accent: oklch(0.72 0.14 40);
+  --accent-foreground: oklch(0.15 0.01 165);
+  --destructive: oklch(0.65 0.18 20);
+  --destructive-foreground: oklch(0.98 0.001 0);
+  --border: oklch(0.30 0.01 165);
+  --input: oklch(0.25 0.01 165);
+  --ring: oklch(0.65 0.12 165);
+  --chart-1: oklch(0.65 0.12 165);
+  --chart-2: oklch(0.60 0.11 165);
+  --chart-3: oklch(0.55 0.10 165);
+  --chart-4: oklch(0.50 0.09 165);
+  --chart-5: oklch(0.45 0.08 165);
+  --sidebar: oklch(0.20 0.01 165);
+  --sidebar-foreground: oklch(0.92 0.01 65);
+  --sidebar-accent: oklch(0.30 0.01 165);
+  --sidebar-accent-foreground: oklch(0.98 0.001 0);
+  --sidebar-border: oklch(0.30 0.01 165);
+  --sidebar-ring: oklch(0.65 0.12 165);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 {
+    @apply text-4xl md:text-5xl;
+  }
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+  p {
+    @apply leading-relaxed;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  /* High Contrast Mode */
+  html.high-contrast {
+    --primary: oklch(0.40 0.20 165);
+    --accent: oklch(0.75 0.20 40);
+    --border: oklch(0.30 0.15 0);
+    --foreground: oklch(0.15 0.05 0);
+  }
+
+  html.dark.high-contrast {
+    --primary: oklch(0.80 0.18 165);
+    --accent: oklch(0.85 0.18 40);
+    --border: oklch(0.80 0.10 0);
+    --foreground: oklch(0.95 0.05 0);
+  }
+
+  /* Animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slide-down 0.6s ease-out;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  /* Smooth transitions */
+  button,
+  a,
+  [role="button"] {
+    @apply transition-all duration-200;
+  }
+
+  /* Focus states for accessibility */
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /**
+   * Custom container utility that centers content and adds responsive padding.
+   */
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
